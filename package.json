@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "bun test",
-    "postinstall": "node -e \"console.log('opencode-huge-agents installed with 3 agents: refactor, ask, exec'); console.log('To continue setup, run: npx opencode-huge-agents install'); console.log('With Bun: bunx opencode-huge-agents install');\"",
+    "postinstall": "echo opencode-huge-agents installed with 3 agents: refactor, ask, exec\nTo continue setup, run: npx opencode-huge-agents install\nWith Bun: bunx opencode-huge-agents install'",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },
