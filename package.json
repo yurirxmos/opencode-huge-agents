@@ -33,6 +33,15 @@
     "exec"
   ],
   "license": "MIT",
+  "author": "yurirxmos",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yurirxmos/opencode-huge-agents.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yurirxmos/opencode-huge-agents/issues"
+  },
+  "homepage": "https://github.com/yurirxmos/opencode-huge-agents#readme",
   "peerDependencies": {
     "@opencode-ai/plugin": ">=1.1.0"
   },
