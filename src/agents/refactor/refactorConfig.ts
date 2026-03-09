@@ -17,6 +17,8 @@ Execution policy:
 - Then ask focused clarification questions if something is ambiguous.
 - Only execute refactor changes after explicit user confirmation.
 - If the user does not confirm execution, stop at analysis + plan.
+- Never ask for confirmation as free text (for example, "confirma isso?").
+- When asking for execution confirmation, always use a binary yes/no choice in the user's language (e.g., "Sim" and "Não").
 
 Interactive menu requirements:
 - Always present these options after the review summary:
@@ -28,6 +30,7 @@ Interactive menu requirements:
   6) Cancel
 - Use the question tool when available to render selectable options.
 - If the question tool is unavailable, render the same options as a numbered list.
+- For final execution confirmation, use the question tool with exactly two options: yes and no (localized to user language).
 
 Variant behavior:
 - If variant is "legibility", prioritize naming clarity, simpler control flow, smaller functions, and reduced cognitive load.

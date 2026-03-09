@@ -6,21 +6,21 @@
 
 ```
 $ opencode agent list
-  → refactor [🟢] ──────────── safe, review-first refactoring
-  → ask      [🟠] ──────────── read-only technical advisor  
-  → exec     [🔴] ──────────── smart executor with auto-planning
+  → refactor ──────────── safe, review-first refactoring
+  → ask      ──────────── read-only technical advisor
+  → exec     ──────────── strategic orchestrator with adaptive execution modes
 ```
 
 ## $ ./overview.sh
 
 ```
-┌─────────────┬───────┬──────────────────────┬─────────────────────┬────────────────────────┐
-│ AGENT       │ COLOR │ PURPOSE              │ EDITING BEHAVIOR    │ BEST FOR               │
-├─────────────┼───────┼──────────────────────┼─────────────────────┼────────────────────────┤
-│ refactor    │  🟢   │ Improve code quality │ After review        │ Safe refactoring       │
-│ ask         │  🟠   │ Technical advisor    │ Read-only (never)   │ Understanding code     │
-│ exec        │  🔴   │ Execute changes      │ Direct or planned   │ Feature implementation │
-└─────────────┴───────┴──────────────────────┴─────────────────────┴────────────────────────┘
+┌─────────────┬──────────────────────┬─────────────────────┬────────────────────────┐
+│ AGENT       │ PURPOSE              │ EDITING BEHAVIOR    │ BEST FOR               │
+├─────────────┼──────────────────────┼─────────────────────┼────────────────────────┤
+│ refactor    │ Improve code quality │ After review        │ Safe refactoring       │
+│ ask         │ Technical advisor    │ Read-only (never)   │ Understanding code     │
+│ exec        │ Orchestrate execution│ Adaptive by risk    │ End-to-end delivery    │
+└─────────────┴──────────────────────┴─────────────────────┴────────────────────────┘
 ```
 
 ## $ ./install.sh
@@ -57,13 +57,16 @@ $ opencode [TAB]
 $ /refactor <target>
 $ /ask <question>
 $ /exec <task>
+$ /exec-fast <task>
+$ /exec-balanced <task>
+$ /exec-safe <task>
 ```
 
 ---
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║  🟢 REFACTOR AGENT                                       ║
+║  REFACTOR AGENT                                          ║
 ║  Safe, review-first refactoring                          ║
 ╚══════════════════════════════════════════════════════════╝
 ```
@@ -111,7 +114,7 @@ $ /refactor-legibility components/Dashboard.tsx
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║  🟠 ASK AGENT                                            ║
+║  ASK AGENT                                               ║
 ║  Read-only technical advisor                             ║
 ╚══════════════════════════════════════════════════════════╝
 ```
@@ -130,6 +133,8 @@ $ /ask <question>              # Ask technical questions (never edits)
 ✓ Traces execution flows
 ✓ Identifies dependencies
 ✓ Answers "how" and "why" questions
+✓ Starts with a direct answer, then code references (file:line)
+✓ Adapts depth automatically (quick for simple, deep for architecture)
 ✗ NEVER edits files
 ```
 
@@ -149,69 +154,75 @@ $ /ask What are the dependencies of the UserService?
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║  🔴 EXEC AGENT                                           ║
-║  Smart executor with auto-planning                       ║
+║  EXEC AGENT                                              ║
+║  Strategic execution orchestrator                         ║
 ╚══════════════════════════════════════════════════════════╝
 ```
 
-### Command
+### Commands
 
 ```bash
-$ /exec <task>                 # Execute (auto-decides if planning needed)
+$ /exec <task>                 # Auto-select mode by impact/risk/reversibility
+$ /exec-fast <task>            # Prefer speed for low-risk reversible tasks
+$ /exec-balanced <task>        # Plan then execute for medium-risk changes
+$ /exec-safe <task>            # Risk-first for high-impact critical tasks
 ```
 
 ### How Exec Works
 
 ```
-┌─────────────────────┐
-│  TASK ASSESSMENT    │
-└──────────┬──────────┘
-           │
-    ┌──────┴──────┐
-    │             │
-┌───▼──┐      ┌───▼───┐
-│SIMPLE│      │COMPLEX│
-└───┬──┘      └───┬───┘
-    │             │
-    │         ┌───▼──────────┐
-    │         │ Create Plan  │
-    │         │ (TodoWrite)  │
-    │         └───┬──────────┘
-    │             │
-    │         ┌───▼──────────┐
-    │         │ User Review  │
-    │         └───┬──────────┘
-    │             │
-    └─────┬───────┘
-          │
-    ┌─────▼──────┐
-    │  EXECUTE   │
-    └────────────┘
+┌──────────────────────────────────┐
+│ Assess impact, risk, reversibility │
+└────────────────┬─────────────────┘
+                 │
+     ┌───────────┼───────────┐
+     │           │           │
+  ┌──▼───┐   ┌───▼────┐   ┌──▼───┐
+  │ FAST │   │BALANCED│   │ SAFE │
+  └──┬───┘   └───┬────┘   └──┬───┘
+     │           │           │
+     │      Plan + review    │
+     │      (TodoWrite)      │
+     │           │           │
+     └───────────┴───────────┘
+                 │
+      ┌──────────▼──────────┐
+      │ Execute + validate  │
+      └──────────┬──────────┘
+                 │
+      ┌──────────▼──────────┐
+      │ Delivery contract   │
+      │ objective/mode/     │
+      │ changes/validation/ │
+      │ residual risks      │
+      └─────────────────────┘
 ```
 
-**Simple tasks** (executes immediately):
+**Fast mode** (executes immediately):
 - 1-2 files with clear changes
-- Straightforward logic
-- Low risk
+- Low risk and reversible
 - Example: `"fix typo in config"`
 
-**Complex tasks** (creates plan first):
-- 3+ files or interconnected changes
-- Architectural decisions required
-- Unclear requirements
-- High risk
-- Example: `"add authentication system"`
+**Balanced mode** (creates plan first):
+- Interconnected changes with moderate risk
+- Dependencies need coordination
+- Example: `"add API caching + invalidation"`
+
+**Safe mode** (risk-first execution):
+- High-impact or hard-to-reverse changes
+- Critical paths (auth, data, infra)
+- Example: `"migrate authentication flow"`
 
 ### Examples
 
 ```bash
 $ /exec Add error handling to the login function
-$ /exec Implement a caching layer for API responses
-$ /exec Fix the TypeScript errors in the build
-$ /exec Refactor the entire data layer (will auto-plan)
+$ /exec-fast Fix typos and small naming inconsistencies in config
+$ /exec-balanced Implement API caching with cache invalidation rules
+$ /exec-safe Refactor authentication flow with rollback strategy
 ```
 
-**Use exec when:** You want smart execution that adapts to task complexity.
+**Use exec when:** You need end-to-end execution with strategy, validation, and clear risk handling.
 
 ---
 
@@ -252,9 +263,9 @@ $ /exec Refactor the entire data layer (will auto-plan)
 ├─────────────┼──────────┼──────────┼─────────────────────────┤
 │ build       │ Immediate│ Manual   │ Quick features          │
 │ plan        │ Ask first│ Always   │ Understanding & planning│
-│ refactor 🟢 │ After rev│ Safety   │ Code quality            │
-│ ask 🟠      │ Never    │ N/A      │ Technical Q&A           │
-│ exec 🔴     │ Smart    │ Auto     │ Adaptive execution      │
+│ refactor    │ After rev│ Safety   │ Code quality            │
+│ ask         │ Never    │ N/A      │ Technical Q&A           │
+│ exec        │ Adaptive │ By risk  │ End-to-end execution    │
 └─────────────┴──────────┴──────────┴─────────────────────────┘
 ```
 

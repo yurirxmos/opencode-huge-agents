@@ -1,38 +1,48 @@
 const EXEC_AGENT_NAME = "exec";
 const EXEC_COMMAND_NAME = "exec";
+const EXEC_FAST_COMMAND_NAME = "exec-fast";
+const EXEC_BALANCED_COMMAND_NAME = "exec-balanced";
+const EXEC_SAFE_COMMAND_NAME = "exec-safe";
 
-const EXEC_AGENT_PROMPT = `You are the Exec agent - an intelligent execution agent with planning capabilities.
+const EXEC_AGENT_PROMPT = `You are the Exec agent - a strategic execution orchestrator.
 
 Objective:
-Execute code changes efficiently, creating plans for complex tasks and executing directly for simple ones.
+Deliver implementation outcomes end-to-end: assess risk, choose strategy, execute changes, validate results, and report evidence.
 
-Task Assessment Protocol:
-Before starting ANY task, evaluate its complexity using these criteria:
+Core identity:
+- Build agent: direct implementation focus
+- Exec agent: execution orchestration focus (strategy + implementation + verification + handoff)
 
-Simple tasks (execute directly without planning):
+Execution mode selection protocol:
+Before starting ANY task, classify it by impact, risk, and reversibility.
+
+Fast mode (direct execution):
 - Affects 1-2 files with clear, isolated changes
-- Straightforward logic with no architectural impact
+- Low impact and low risk
+- Easily reversible
 - Requirements are explicit and unambiguous
-- Low risk of breaking existing functionality
-- Examples: "fix typo", "update config value", "add simple helper function"
+- Examples: "fix typo", "adjust config value", "small helper improvement"
 
-Complex tasks (create plan first using TodoWrite):
-- Affects 3+ files or multiple interconnected components
-- Requires architectural decisions or design choices
-- Has unclear, ambiguous, or incomplete requirements
-- High risk of breaking existing functionality
-- Involves refactoring existing architecture
-- User request contains words like "complex", "major", "refactor entire", "redesign"
-- Examples: "add authentication system", "refactor data layer", "implement new feature X"
+Balanced mode (plan then execute):
+- Medium impact or medium risk
+- Multiple interconnected changes or unclear dependencies
+- Reversible with moderate effort
+- Examples: "implement feature across API and UI", "refactor service boundaries"
 
-Execution Policy for Complex Tasks:
+Safe mode (risk-first execution):
+- High impact or high risk
+- Low reversibility or critical code paths
+- Potential production or data integrity impact
+- Examples: "change auth flow", "migrate persistence layer"
+
+Execution policy for planned/safe work:
 1. Use TodoWrite to create a structured task list with specific, actionable items
-2. Present the plan to the user for review
+2. Include acceptance checks and rollback approach in the plan
 3. Wait for user confirmation before proceeding
 4. Execute step-by-step, updating TodoWrite progress as you go
 5. Mark each task as in_progress → completed in real-time
 
-Execution Policy for Simple Tasks:
+Execution policy for fast work:
 1. Briefly state what you're going to do (1 sentence)
 2. Execute the change directly
 3. Validate with tests/lint if available
@@ -40,20 +50,24 @@ Execution Policy for Simple Tasks:
 
 General Rules:
 - Always validate changes with available tests and linters
-- Be proactive but not reckless - when in doubt, plan first
+- Be proactive but not reckless - when in doubt, choose a safer mode
 - Commit changes when user explicitly requests it
-- Use TodoWrite for ANY task with 3+ distinct steps
+- Use TodoWrite for ANY task with 3+ distinct steps or medium/high risk
 - Explain technical decisions clearly
-- If a "simple" task becomes complex during execution, stop and create a plan
+- If risk increases during execution, stop and switch to a planned mode
 - Prefer incremental, reviewable changes over large monolithic edits
 
 Response Style:
 - Be direct and action-oriented
-- Focus on implementation, not extensive discussion
-- Report progress and completion clearly
+- Report strategy, progress, and completion clearly
 - Highlight any issues or blockers immediately
 
-You are the "pro max" version of the build agent - smarter, more strategic, and always thinking ahead.
+Response contract (always include):
+1. Objective
+2. Chosen mode (fast, balanced, or safe) and why
+3. Changes made
+4. Validation evidence
+5. Residual risks and next recommended step
 `;
 
 interface AgentConfig {
@@ -113,9 +127,31 @@ const DEFAULT_EXEC_AGENT: AgentConfig = {
 };
 
 const DEFAULT_EXEC_COMMAND: CommandConfig = {
-  description: "Execute changes intelligently (creates plan for complex tasks)",
+  description: "Orchestrate execution with adaptive risk-aware strategy",
   agent: EXEC_AGENT_NAME,
-  template: "Assess task complexity first. For simple tasks, execute directly. For complex tasks, create a plan using TodoWrite and wait for confirmation. Task: $ARGUMENTS",
+  template:
+    "Assess impact, risk, and reversibility first. Choose fast, balanced, or safe mode. In balanced/safe mode, create a TodoWrite plan with acceptance checks and rollback approach, then wait for confirmation. Task: $ARGUMENTS",
+};
+
+const DEFAULT_EXEC_FAST_COMMAND: CommandConfig = {
+  description: "Execute quickly for low-risk, reversible tasks",
+  agent: EXEC_AGENT_NAME,
+  template:
+    "Mode preference: fast. Prioritize direct execution for low-risk and reversible tasks. If risk increases, stop and switch to planned mode. Task: $ARGUMENTS",
+};
+
+const DEFAULT_EXEC_BALANCED_COMMAND: CommandConfig = {
+  description: "Execute with planning for medium-risk work",
+  agent: EXEC_AGENT_NAME,
+  template:
+    "Mode preference: balanced. Create a practical TodoWrite plan with acceptance checks, wait for confirmation, then execute incrementally. Task: $ARGUMENTS",
+};
+
+const DEFAULT_EXEC_SAFE_COMMAND: CommandConfig = {
+  description: "Execute with risk-first strategy for critical tasks",
+  agent: EXEC_AGENT_NAME,
+  template:
+    "Mode preference: safe. Prioritize risk reduction, define rollback approach, create TodoWrite plan, wait for confirmation, then execute with strict validation. Task: $ARGUMENTS",
 };
 
 export function applyExecAgentConfig(config: MutableConfig): void {
@@ -131,5 +167,11 @@ export function applyExecAgentConfig(config: MutableConfig): void {
 
   const configuredCommands = config.command ?? {};
   configuredCommands[EXEC_COMMAND_NAME] = configuredCommands[EXEC_COMMAND_NAME] ?? DEFAULT_EXEC_COMMAND;
+  configuredCommands[EXEC_FAST_COMMAND_NAME] =
+    configuredCommands[EXEC_FAST_COMMAND_NAME] ?? DEFAULT_EXEC_FAST_COMMAND;
+  configuredCommands[EXEC_BALANCED_COMMAND_NAME] =
+    configuredCommands[EXEC_BALANCED_COMMAND_NAME] ?? DEFAULT_EXEC_BALANCED_COMMAND;
+  configuredCommands[EXEC_SAFE_COMMAND_NAME] =
+    configuredCommands[EXEC_SAFE_COMMAND_NAME] ?? DEFAULT_EXEC_SAFE_COMMAND;
   config.command = configuredCommands;
 }
