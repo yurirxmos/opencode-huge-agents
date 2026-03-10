@@ -122,20 +122,21 @@ $ /refactor-legibility components/Dashboard.tsx
 ### Command
 
 ```bash
-$ /ask <question>              # Ask technical questions (never edits)
+$ /ask <question>              # Objective technical answer with evidence (never edits)
 ```
 
 ### What Ask Does
 
 ```
 ✓ Explores and analyzes code
-✓ Explains architecture and patterns
-✓ Traces execution flows
-✓ Identifies dependencies
-✓ Answers "how" and "why" questions
-✓ Starts with a direct answer, then code references (file:line)
-✓ Adapts depth automatically (quick for simple, deep for architecture)
+✓ Prioritizes objective, concise answers by default
+✓ Returns direct answer + code evidence (file:line)
+✓ Expands only when user explicitly asks for deeper detail
+✓ Explains architecture, flows, and dependencies when needed
+✓ Answers "how" and "why" questions with verified references
 ✗ NEVER edits files
+✗ NEVER proposes implementation plans or task breakdowns
+→ If action is requested, recommends switching to planning/execution mode
 ```
 
 ### Examples

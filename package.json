@@ -1,6 +1,6 @@
 {
   "name": "opencode-huge-agents",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "OpenCode agent pack: refactor (review-first), ask (read-only), and exec (risk-aware execution orchestrator)",
   "type": "module",
   "bin": {
