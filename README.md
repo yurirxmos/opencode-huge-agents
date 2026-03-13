@@ -57,9 +57,6 @@ $ opencode [TAB]
 $ /refactor <target>
 $ /ask <question>
 $ /exec <task>
-$ /exec-fast <task>
-$ /exec-balanced <task>
-$ /exec-safe <task>
 ```
 
 ---
@@ -74,10 +71,7 @@ $ /exec-safe <task>
 ### Commands
 
 ```bash
-$ /refactor                    # General refactoring (balanced)
-$ /refactor-legibility         # Focus on readability
-$ /refactor-performance        # Focus on optimization
-$ /refactor-maintainability    # Focus on maintainability
+$ /refactor <target>    # Review-first refactoring workflow
 ```
 
 ### Workflow
@@ -104,8 +98,8 @@ $ /refactor-maintainability    # Focus on maintainability
 
 ```bash
 $ /refactor src/services/user-service.ts
-$ /refactor-performance the data processing pipeline
-$ /refactor-legibility components/Dashboard.tsx
+$ /refactor the data processing pipeline
+$ /refactor components/Dashboard.tsx
 ```
 
 **Use refactor when:** You want to improve existing code quality safely without adding features.
@@ -163,10 +157,7 @@ $ /ask What are the dependencies of the UserService?
 ### Commands
 
 ```bash
-$ /exec <task>                 # Auto-select mode based on risk/impact
-$ /exec-fast <task>            # Execute directly for low-risk tasks
-$ /exec-balanced <task>        # Plan then execute for medium-risk work
-$ /exec-safe <task>            # Risk-first strategy for critical tasks
+$ /exec <task>    # Adaptive executor (auto-selects mode based on risk)
 ```
 
 ### How Exec Works
@@ -245,9 +236,9 @@ When working with **React/Next.js/HTML/CSS/UI**, exec automatically applies:
 
 ```bash
 $ /exec Add error handling to the login function
-$ /exec-fast Fix typos in config and update button text
-$ /exec-balanced Implement API caching with cache invalidation
-$ /exec-safe Refactor authentication flow with rollback plan
+$ /exec Fix typos in config and update button text
+$ /exec Implement API caching with cache invalidation
+$ /exec Refactor authentication flow with rollback plan
 ```
 
 **Use exec when:** You need direct execution with clear strategy and validation.
@@ -315,6 +306,38 @@ $ cd opencode-huge-agents
 $ npm install
 $ npm run build
 ```
+
+## $ ./architecture.sh
+
+Starting from version **0.4.0**, the project uses a **persona-based architecture**:
+
+```
+src/
+├── agents/
+│   ├── shared/                # Shared infrastructure
+│   │   ├── types.ts          # Common interfaces (AgentConfig, Persona, etc.)
+│   │   └── configMerger.ts   # Shared utilities (merge, apply)
+│   ├── huge/
+│   │   └── personas/         # Persona definitions
+│   │       ├── askPersona.ts
+│   │       ├── execPersona.ts
+│   │       └── refactorPersona.ts
+│   ├── ask/
+│   │   └── askConfig.ts      # Imports askPersona
+│   ├── exec/
+│   │   └── execConfig.ts     # Imports execPersona
+│   └── refactor/
+│       └── refactorConfig.ts # Imports refactorPersona
+└── index.ts                  # Plugin entry point
+```
+
+**Benefits:**
+- DRY: No duplicated helper functions
+- Centralized prompt management in `personas/`
+- Easy to add new personas
+- Better testability
+
+**Zero Breaking Changes:** All commands (`/ask`, `/exec`, `/refactor`) work exactly as before. You can still switch between agents using Tab.
 
 ---
 

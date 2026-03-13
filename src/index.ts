@@ -1,5 +1,6 @@
 import type { Plugin } from "@opencode-ai/plugin";
-import { applyRefactorAgentConfig, type MutableConfig } from "./agents/refactor/refactorConfig.js";
+import type { MutableConfig } from "./agents/shared/types.js";
+import { applyRefactorAgentConfig } from "./agents/refactor/refactorConfig.js";
 import { applyAskAgentConfig } from "./agents/ask/askConfig.js";
 import { applyExecAgentConfig } from "./agents/exec/execConfig.js";
 
