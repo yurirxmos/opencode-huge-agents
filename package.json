@@ -1,7 +1,7 @@
 {
   "name": "opencode-huge-agents",
-  "version": "0.2.1",
-  "description": "OpenCode agent pack: refactor (review-first), ask (read-only), and exec (risk-aware execution orchestrator)",
+  "version": "0.3.0",
+  "description": "OpenCode agent pack: refactor (review-first), ask (read-only), and exec (direct executor with web interface guidelines)",
   "type": "module",
   "bin": {
     "opencode-huge-agents": "dist/cli.js"
