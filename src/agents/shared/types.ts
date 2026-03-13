@@ -1,4 +1,4 @@
-// Tipos compartilhados entre todos os agentes
+// Shared types used by all agents
 
 export type Persona = "ask" | "exec" | "refactor";
 
@@ -25,7 +25,7 @@ export interface MutableConfig {
   command?: Record<string, CommandConfig | undefined>;
 }
 
-// Interface para configuração de uma persona
+// Defines the configuration for a persona
 export interface PersonaConfig {
   prompt: string;
   description: string;

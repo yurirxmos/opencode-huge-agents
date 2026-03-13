@@ -1,17 +1,17 @@
-// Utilitários compartilhados para merge de configurações
+// Shared utilities for merging configurations
 
 import type { AgentConfig, CommandConfig, MutableConfig } from "./types.js";
 
 /**
- * Verifica se um valor é um objeto plano (não array, não null)
+ * Checks if a value is a plain object (and not an array or null)
  */
 export function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /**
- * Faz merge seguro de configurações de agente
- * Preserva configurações existentes do usuário enquanto aplica defaults
+ * Safely merges agent configurations.
+ * Preserves existing user settings while applying defaults.
  */
 export function mergeAgentConfig(
   defaultConfig: AgentConfig,
@@ -21,7 +21,7 @@ export function mergeAgentConfig(
 
   for (const [key, value] of Object.entries(existingConfig)) {
     const defaultValue = mergedConfig[key];
-    // Se ambos são objetos planos, faz merge recursivo
+    // If both are plain objects, merge recursively
     if (isPlainObject(defaultValue) && isPlainObject(value)) {
       mergedConfig[key] = {
         ...defaultValue,
@@ -30,7 +30,7 @@ export function mergeAgentConfig(
       continue;
     }
 
-    // Caso contrário, usa o valor existente
+    // Otherwise, use the existing value
     mergedConfig[key] = value;
   }
 
@@ -38,8 +38,8 @@ export function mergeAgentConfig(
 }
 
 /**
- * Aplica configuração de agente e comandos ao config do OpenCode
- * Centraliza a lógica de registro que era duplicada em cada agente
+ * Applies agent and command configurations to the OpenCode config.
+ * Centralizes the registration logic that was duplicated in each agent.
  */
 export function applyAgentAndCommands(
   config: MutableConfig,
@@ -47,13 +47,13 @@ export function applyAgentAndCommands(
   agentConfig: AgentConfig,
   commands: Record<string, CommandConfig>,
 ): void {
-  // Registra o agente
+  // Register the agent
   const configuredAgents = config.agent ?? {};
   const existingAgent = configuredAgents[agentName] ?? {};
   configuredAgents[agentName] = mergeAgentConfig(agentConfig, existingAgent);
   config.agent = configuredAgents;
 
-  // Registra os comandos
+  // Register the commands
   const configuredCommands = config.command ?? {};
   for (const [commandName, commandConfig] of Object.entries(commands)) {
     configuredCommands[commandName] = configuredCommands[commandName] ?? commandConfig;

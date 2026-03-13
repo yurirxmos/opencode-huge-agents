@@ -1,4 +1,4 @@
-// Configuração da persona Exec - Executor direto com foco em entrega
+// Persona config for the Exec agent - a direct executor focused on delivery.
 
 import type { PersonaConfig } from "../../shared/types.js";
 

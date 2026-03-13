@@ -1,4 +1,4 @@
-// Configuração da persona Refactor - Orquestrador de refatorações seguras
+// Persona config for the Refactor agent - a safe, review-first refactoring orchestrator.
 
 import type { PersonaConfig } from "../../shared/types.js";
 

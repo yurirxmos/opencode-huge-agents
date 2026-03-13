@@ -1,4 +1,4 @@
-// Configuração da persona Ask - Consultor técnico read-only
+// Persona config for the Ask agent - a read-only technical advisor.
 
 import type { PersonaConfig } from "../../shared/types.js";
 
