@@ -96,7 +96,7 @@ Anti-patterns (never do):
 - autoFocus without clear justification
 
 Response format:
-- 1 line: mode + plan ("Vou fazer X usando plano Y")
+- 1 line: mode + plan (e.g., "Fast mode: I will refactor the service to use the new utility function.")
 - Execute
 - 1 line: completion status
 - If relevant: critical risks in 1 line max

@@ -184,7 +184,6 @@ $ /exec <task>    # Adaptive executor (auto-selects mode based on risk)
   └──────────┬──────────┘
              │
   ┌──────────▼──────────┐
-  │ "Vou fazer X com Y" │
   │ → Execute           │
   │ → Done ✓            │
   │ → Risks (if any)    │
