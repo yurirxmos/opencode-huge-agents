@@ -8,7 +8,7 @@
 $ opencode agent list
   → refactor ──────────── safe, review-first refactoring
   → ask      ──────────── read-only technical advisor
-  → exec     ──────────── strategic orchestrator with adaptive execution modes
+  → exec     ──────────── direct executor with web interface guidelines
 ```
 
 ## $ ./overview.sh
@@ -19,7 +19,7 @@ $ opencode agent list
 ├─────────────┼──────────────────────┼─────────────────────┼────────────────────────┤
 │ refactor    │ Improve code quality │ After review        │ Safe refactoring       │
 │ ask         │ Technical advisor    │ Read-only (never)   │ Understanding code     │
-│ exec        │ Orchestrate execution│ Adaptive by risk    │ End-to-end delivery    │
+│ exec        │ Direct executor      │ Adaptive by risk    │ End-to-end delivery    │
 └─────────────┴──────────────────────┴─────────────────────┴────────────────────────┘
 ```
 
@@ -156,74 +156,101 @@ $ /ask What are the dependencies of the UserService?
 ```
 ╔══════════════════════════════════════════════════════════╗
 ║  EXEC AGENT                                              ║
-║  Strategic execution orchestrator                         ║
+║  Direct executor focused on delivery                     ║
 ╚══════════════════════════════════════════════════════════╝
 ```
 
 ### Commands
 
 ```bash
-$ /exec <task>                 # Auto-select mode by impact/risk/reversibility
-$ /exec-fast <task>            # Prefer speed for low-risk reversible tasks
-$ /exec-balanced <task>        # Plan then execute for medium-risk changes
-$ /exec-safe <task>            # Risk-first for high-impact critical tasks
+$ /exec <task>                 # Auto-select mode based on risk/impact
+$ /exec-fast <task>            # Execute directly for low-risk tasks
+$ /exec-balanced <task>        # Plan then execute for medium-risk work
+$ /exec-safe <task>            # Risk-first strategy for critical tasks
 ```
 
 ### How Exec Works
 
 ```
-┌──────────────────────────────────┐
-│ Assess impact, risk, reversibility │
-└────────────────┬─────────────────┘
-                 │
-     ┌───────────┼───────────┐
-     │           │           │
-  ┌──▼───┐   ┌───▼────┐   ┌──▼───┐
-  │ FAST │   │BALANCED│   │ SAFE │
-  └──┬───┘   └───┬────┘   └──┬───┘
-     │           │           │
-     │      Plan + review    │
-     │      (TodoWrite)      │
-     │           │           │
-     └───────────┴───────────┘
-                 │
-      ┌──────────▼──────────┐
-      │ Execute + validate  │
-      └──────────┬──────────┘
-                 │
-      ┌──────────▼──────────┐
-      │ Delivery contract   │
-      │ objective/mode/     │
-      │ changes/validation/ │
-      │ residual risks      │
-      └─────────────────────┘
+┌──────────────────────────┐
+│ Choose mode by risk      │
+└────────────┬─────────────┘
+             │
+     ┌───────┼────────┐
+     │       │        │
+  ┌──▼──┐ ┌─▼───┐ ┌──▼──┐
+  │FAST │ │BALAN│ │SAFE │
+  │     │ │ CED │ │     │
+  └──┬──┘ └──┬──┘ └──┬──┘
+     │       │       │
+     │  TodoWrite    │
+     │  + confirm    │
+     │       │       │
+     └───────┴───────┘
+             │
+  ┌──────────▼──────────┐
+  │ Execute + validate  │
+  └──────────┬──────────┘
+             │
+  ┌──────────▼──────────┐
+  │ "Vou fazer X com Y" │
+  │ → Execute           │
+  │ → Done ✓            │
+  │ → Risks (if any)    │
+  └─────────────────────┘
 ```
 
 **Fast mode** (executes immediately):
-- 1-2 files with clear changes
-- Low risk and reversible
+- 1-2 files, isolated changes, easily reversible
 - Example: `"fix typo in config"`
 
 **Balanced mode** (creates plan first):
-- Interconnected changes with moderate risk
-- Dependencies need coordination
+- Multiple files, interconnected changes, medium risk
 - Example: `"add API caching + invalidation"`
 
 **Safe mode** (risk-first execution):
-- High-impact or hard-to-reverse changes
-- Critical paths (auth, data, infra)
+- High risk, critical paths, low reversibility
 - Example: `"migrate authentication flow"`
+
+### Web Development Rules
+
+When working with **React/Next.js/HTML/CSS/UI**, exec automatically applies:
+
+**Accessibility:**
+- Icon buttons need `aria-label`
+- Form controls need `<label>` or `aria-label`
+- Use `<button>` for actions, `<a>/<Link>` for navigation
+- Interactive elements need visible focus states
+- Never `outline-none` without replacement
+
+**Forms:**
+- Inputs need `autocomplete` + meaningful `name` + correct `type`
+- Never block paste
+- Submit button enabled until request starts
+- Errors inline next to fields
+
+**Performance:**
+- Large lists (>50 items): virtualize
+- `<img>` needs explicit `width`/`height`
+- No layout reads in render (`getBoundingClientRect`, etc.)
+
+**Anti-patterns flagged:**
+- `transition: all`
+- `<div onClick>` instead of `<button>`
+- Images without dimensions
+- Form inputs without labels
+- `autoFocus` without justification
 
 ### Examples
 
 ```bash
 $ /exec Add error handling to the login function
-$ /exec-fast Fix typos and small naming inconsistencies in config
-$ /exec-balanced Implement API caching with cache invalidation rules
-$ /exec-safe Refactor authentication flow with rollback strategy
+$ /exec-fast Fix typos in config and update button text
+$ /exec-balanced Implement API caching with cache invalidation
+$ /exec-safe Refactor authentication flow with rollback plan
 ```
 
-**Use exec when:** You need end-to-end execution with strategy, validation, and clear risk handling.
+**Use exec when:** You need direct execution with clear strategy and validation.
 
 ---
 
