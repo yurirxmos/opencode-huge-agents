@@ -14,10 +14,10 @@ const DEFAULT_EXEC_AGENT: AgentConfig = {
 };
 
 const DEFAULT_EXEC_COMMAND: CommandConfig = {
-  description: "Execute task with adaptive strategy (auto-selects mode)",
+  description: "Plan first, keep clarifying, then execute on implement now",
   agent: EXEC_AGENT_NAME,
   template:
-    "Choose fast, balanced, or safe mode based on risk. Execute directly (fast) or plan first (balanced/safe). Task: $ARGUMENTS",
+    "Enter read-only planning mode first. Investigate the task, produce a concise implementation plan, keep answering doubts and revising the plan until the user is satisfied, and end every planning response with an interactive menu whose first option is exactly 'implement now'. Execute only after the user explicitly chooses 'implement now'. Task: $ARGUMENTS",
 };
 
 export function applyExecAgentConfig(config: MutableConfig): void {

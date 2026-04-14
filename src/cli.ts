@@ -8,9 +8,9 @@ import {
 const HELP_TEXT = `opencode-huge-agents
 
 Multi-agent plugin for OpenCode with 3 specialized agents:
-  - refactor: Review-first refactoring with safety guarantees
+  - huge-plan: Build-focused planning that sharpens rough requests
   - ask: Read-only technical advisor for code questions
-  - exec: Strategic execution orchestrator with adaptive modes
+  - exec: Planning-first executor with an approval menu
 
 Usage:
   opencode-huge-agents install [plugin-spec] [--config /path/to/opencode.json]
@@ -23,8 +23,8 @@ Examples:
   opencode-huge-agents uninstall opencode-huge-agents
 
 After installation:
-  - Tab completion: Select refactor, ask, or exec as primary agent
-  - Commands: /refactor, /ask, /exec, /exec-fast, /exec-balanced, /exec-safe
+  - Tab completion: Select huge-plan, ask, or exec as primary agent
+  - Commands: /huge-plan, /ask, /exec
   - Run: opencode agent list
 `;
 

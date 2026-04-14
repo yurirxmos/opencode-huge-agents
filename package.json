@@ -1,7 +1,7 @@
 {
   "name": "opencode-huge-agents",
   "version": "0.4.2",
-  "description": "OpenCode agent pack: refactor (review-first), ask (read-only), and exec (direct executor with web interface guidelines)",
+  "description": "OpenCode agent pack: huge-plan (build-focused planning), ask (read-only), and exec (planning-first executor with approval menu)",
   "type": "module",
   "bin": {
     "opencode-huge-agents": "dist/cli.js"
@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "bun test",
-    "postinstall": "node -e \"console.log('opencode-huge-agents installed with 3 agents: refactor, ask, exec\\nTo continue setup, run: npx opencode-huge-agents install\\nWith Bun: bunx opencode-huge-agents install')\"",
+    "postinstall": "node -e \"console.log('opencode-huge-agents installed with 3 agents: huge-plan, ask, exec\\nTo continue setup, run: npx opencode-huge-agents install\\nWith Bun: bunx opencode-huge-agents install')\"",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },
@@ -28,11 +28,11 @@
     "opencode",
     "plugin",
     "agents",
-    "refactor",
+    "planning",
     "ask",
     "exec",
     "orchestration",
-    "risk-aware"
+    "approval-based"
   ],
   "license": "MIT",
   "author": "yurirxmos",

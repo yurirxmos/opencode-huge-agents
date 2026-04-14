@@ -6,9 +6,9 @@
 
 ```
 $ opencode agent list
-  → refactor ──────────── safe, review-first refactoring
+  → huge-plan ─────────── build-focused planning
   → ask      ──────────── read-only technical advisor
-  → exec     ──────────── direct executor with web interface guidelines
+  → exec     ──────────── planning-first executor with approval menu
 ```
 
 ## $ ./overview.sh
@@ -17,9 +17,9 @@ $ opencode agent list
 ┌─────────────┬──────────────────────┬─────────────────────┬────────────────────────┐
 │ AGENT       │ PURPOSE              │ EDITING BEHAVIOR    │ BEST FOR               │
 ├─────────────┼──────────────────────┼─────────────────────┼────────────────────────┤
-│ refactor    │ Improve code quality │ After review        │ Safe refactoring       │
+│ huge-plan   │ Define what to build │ Read-only (never)   │ Clarifying scope       │
 │ ask         │ Technical advisor    │ Read-only (never)   │ Understanding code     │
-│ exec        │ Direct executor      │ Adaptive by risk    │ End-to-end delivery    │
+│ exec        │ Plan then execute    │ After approval      │ Guided delivery        │
 └─────────────┴──────────────────────┴─────────────────────┴────────────────────────┘
 ```
 
@@ -39,7 +39,7 @@ $ bunx opencode-huge-agents install
 
 ```bash
 $ opencode agent list
-  ✓ refactor (primary)
+  ✓ huge-plan (primary)
   ✓ ask (primary)
   ✓ exec (primary)
 ```
@@ -49,12 +49,12 @@ $ opencode agent list
 ```bash
 # Tab completion to select agent
 $ opencode [TAB]
-  → refactor
+  → huge-plan
   → ask
   → exec
 
 # Direct invocation via slash commands
-$ /refactor <target>
+$ /huge-plan <request>
 $ /ask <question>
 $ /exec <task>
 ```
@@ -63,46 +63,40 @@ $ /exec <task>
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║  REFACTOR AGENT                                          ║
-║  Safe, review-first refactoring                          ║
+║  HUGE-PLAN AGENT                                         ║
+║  Clarify goals before building                           ║
 ╚══════════════════════════════════════════════════════════╝
 ```
 
 ### Commands
 
 ```bash
-$ /refactor <target>    # Review-first refactoring workflow
+$ /huge-plan <request>    # Build-focused planning workflow
 ```
 
 ### Workflow
 
 ```
-[1] Analyze code
+[1] Understand desired outcome
      ↓
-[2] Propose improvements
+[2] Rewrite as clear build goal
      ↓
-[3] Interactive menu:
-     → Apply all safe refactors now
-     → Apply only high-impact low-risk refactors
-     → Select refactor variant
-     → Show step-by-step plan
-     → Ask questions before changes
-     → Cancel
+[3] Ask only high-impact questions
      ↓
-[4] Execute (after confirmation)
+[4] Produce concise implementation plan
      ↓
-[5] Validate with tests
+[5] Hand off to /exec
 ```
 
 ### Examples
 
 ```bash
-$ /refactor src/services/user-service.ts
-$ /refactor the data processing pipeline
-$ /refactor components/Dashboard.tsx
+$ /huge-plan build a dashboard for customer health
+$ /huge-plan create an onboarding flow for new users
+$ /huge-plan add exports to the analytics page
 ```
 
-**Use refactor when:** You want to improve existing code quality safely without adding features.
+**Use huge-plan when:** You have a rough idea and want a clear, build-focused plan before implementation.
 
 ---
 
@@ -150,57 +144,54 @@ $ /ask What are the dependencies of the UserService?
 ```
 ╔══════════════════════════════════════════════════════════╗
 ║  EXEC AGENT                                              ║
-║  Direct executor focused on delivery                     ║
+║  Planning-first executor with approval menu             ║
 ╚══════════════════════════════════════════════════════════╝
 ```
 
 ### Commands
 
 ```bash
-$ /exec <task>    # Adaptive executor (auto-selects mode based on risk)
+$ /exec <task>    # Plan first, keep clarifying, then execute on implement now
 ```
 
 ### How Exec Works
 
 ```
 ┌──────────────────────────┐
-│ Choose mode by risk      │
+│ Read-only investigation  │
 └────────────┬─────────────┘
              │
-     ┌───────┼────────┐
-     │       │        │
-  ┌──▼──┐ ┌─▼───┐ ┌──▼──┐
-  │FAST │ │BALAN│ │SAFE │
-  │     │ │ CED │ │     │
-  └──┬──┘ └──┬──┘ └──┬──┘
-     │       │       │
-     │  TodoWrite    │
-     │  + confirm    │
-     │       │       │
-     └───────┴───────┘
-             │
   ┌──────────▼──────────┐
-  │ Execute + validate  │
+  │ Build concise plan  │
   └──────────┬──────────┘
              │
   ┌──────────▼──────────┐
-  │ → Execute           │
-  │ → Done ✓            │
-  │ → Risks (if any)    │
+  │ Ask focused doubts  │
+  │ if needed           │
+  └──────────┬──────────┘
+             │
+  ┌──────────▼──────────┐
+  │ Interactive menu    │
+  │ → implement now     │
+  │ → ask questions     │
+  │ → revise the plan   │
+  │ → cancel            │
+  └──────────┬──────────┘
+             │
+   doubts or revisions?
+             │
+        yes ─┴─ no
+             │
+     answer and refine
+             │
+        show menu again
+             │
+  user chooses implement now
+             │
+  ┌──────────▼──────────┐
+  │ Execute + validate  │
   └─────────────────────┘
 ```
-
-**Fast mode** (executes immediately):
-- 1-2 files, isolated changes, easily reversible
-- Example: `"fix typo in config"`
-
-**Balanced mode** (creates plan first):
-- Multiple files, interconnected changes, medium risk
-- Example: `"add API caching + invalidation"`
-
-**Safe mode** (risk-first execution):
-- High risk, critical paths, low reversibility
-- Example: `"migrate authentication flow"`
 
 ### Web Development Rules
 
@@ -231,6 +222,17 @@ When working with **React/Next.js/HTML/CSS/UI**, exec automatically applies:
 - Form inputs without labels
 - `autoFocus` without justification
 
+### Menu Options
+
+At the end of the planning phase, exec asks the user what to do next:
+
+- implement now
+- ask focused questions about the project
+- revise the plan
+- cancel
+
+If the user still has doubts, exec keeps answering and refining the plan, then shows the same menu again with `implement now`.
+
 ### Examples
 
 ```bash
@@ -240,7 +242,7 @@ $ /exec Implement API caching with cache invalidation
 $ /exec Refactor authentication flow with rollback plan
 ```
 
-**Use exec when:** You need direct execution with clear strategy and validation.
+**Use exec when:** You want implementation, but only after seeing a plan and approving it.
 
 ---
 
@@ -251,7 +253,7 @@ $ /exec Refactor authentication flow with rollback plan
   "$schema": "https://opencode.ai/config.json",
   "plugin": ["opencode-huge-agents@latest"],
   "agent": {
-    "refactor": {
+    "huge-plan": {
       "color": "#55f76dff",
       "permission": {
         "question": "allow"
@@ -281,9 +283,9 @@ $ /exec Refactor authentication flow with rollback plan
 ├─────────────┼──────────┼──────────┼─────────────────────────┤
 │ build       │ Immediate│ Manual   │ Quick features          │
 │ plan        │ Ask first│ Always   │ Understanding & planning│
-│ refactor    │ After rev│ Safety   │ Code quality            │
+│ huge-plan   │ Never    │ Always   │ Build clarification     │
 │ ask         │ Never    │ N/A      │ Technical Q&A           │
-│ exec        │ Adaptive │ By risk  │ End-to-end execution    │
+│ exec        │ After OK │ First    │ Guided execution        │
 └─────────────┴──────────┴──────────┴─────────────────────────┘
 ```
 
@@ -320,13 +322,13 @@ src/
 │   │   └── personas/         # Persona definitions
 │   │       ├── askPersona.ts
 │   │       ├── execPersona.ts
-│   │       └── refactorPersona.ts
+│   │       └── hugePlanPersona.ts
 │   ├── ask/
 │   │   └── askConfig.ts      # Imports askPersona
 │   ├── exec/
 │   │   └── execConfig.ts     # Imports execPersona
-│   └── refactor/
-│       └── refactorConfig.ts # Imports refactorPersona
+│   └── huge-plan/
+│       └── hugePlanConfig.ts # Imports hugePlanPersona
 └── index.ts                  # Plugin entry point
 ```
 
@@ -336,7 +338,7 @@ src/
 - Easy to add new personas
 - Better testability
 
-**Zero Breaking Changes:** All commands (`/ask`, `/exec`, `/refactor`) work exactly as before. You can still switch between agents using Tab.
+**Current Commands:** `/ask`, `/exec`, and `/huge-plan` are registered on install. You can still switch between agents using Tab.
 
 ---
 
