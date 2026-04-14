@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
+import { spawnSync } from "node:child_process";
 import {
   installPluginGlobally,
   uninstallPluginGlobally,
 } from "./configInstaller.js";
+
+const AUTOUPDATE_PLUGIN_SPEC = "opencode-huge-agents@latest";
+const AUTOUPDATE_COMMAND = ["plugin", AUTOUPDATE_PLUGIN_SPEC, "--global", "--force"];
 
 const HELP_TEXT = `opencode-huge-agents
 
@@ -14,11 +18,13 @@ Multi-agent plugin for OpenCode with 3 specialized agents:
 
 Usage:
   opencode-huge-agents install [plugin-spec] [--config /path/to/opencode.json]
+  opencode-huge-agents autoupdate
   opencode-huge-agents uninstall [plugin-name] [--config /path/to/opencode.json]
 
 Examples:
   opencode-huge-agents install
   opencode-huge-agents install opencode-huge-agents@latest
+  opencode-huge-agents autoupdate
   opencode-huge-agents uninstall
   opencode-huge-agents uninstall opencode-huge-agents
 
@@ -29,7 +35,7 @@ After installation:
 `;
 
 interface ParsedArgs {
-  command: "install" | "uninstall" | "help";
+  command: "install" | "autoupdate" | "uninstall" | "help";
   target?: string;
   configPath?: string;
 }
@@ -75,8 +81,16 @@ function parseArgs(argv: string[]): ParsedArgs {
   }
 
   const [command, ...rest] = argv;
-  if (command !== "install" && command !== "uninstall") {
+  if (command !== "install" && command !== "autoupdate" && command !== "uninstall") {
     throw new Error(`Unknown command: ${command}`);
+  }
+
+  if (command === "autoupdate") {
+    if (rest.length > 0) {
+      throw new Error(`Unexpected argument: ${rest[0]}`);
+    }
+
+    return { command };
   }
 
   let target: string | undefined;
@@ -114,6 +128,28 @@ function parseArgs(argv: string[]): ParsedArgs {
   };
 }
 
+function runAutoupdate(): number {
+  const result = spawnSync("opencode", AUTOUPDATE_COMMAND, {
+    stdio: "inherit",
+  });
+
+  if (result.error) {
+    console.error(`Could not run opencode: ${result.error.message}`);
+    console.error(`Run manually: opencode ${AUTOUPDATE_COMMAND.join(" ")}`);
+    return 1;
+  }
+
+  if (result.status !== 0) {
+    console.error("Autoupdate failed.");
+    console.error(`Run manually: opencode ${AUTOUPDATE_COMMAND.join(" ")}`);
+    return result.status ?? 1;
+  }
+
+  console.log("Plugin autoupdated to the latest available version.");
+  console.log("Restart OpenCode and run: opencode agent list");
+  return 0;
+}
+
 function run(): number {
   try {
     const parsed = parseArgs(process.argv.slice(2));
@@ -132,6 +168,10 @@ function run(): number {
       console.log(`Plugin installed in ${result.configPath}`);
       console.log("Restart OpenCode and run: opencode agent list");
       return 0;
+    }
+
+    if (parsed.command === "autoupdate") {
+      return runAutoupdate();
     }
 
     const result = uninstallPluginGlobally({

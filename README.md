@@ -35,6 +35,14 @@ $ bun add opencode-huge-agents
 $ bunx opencode-huge-agents install
 ```
 
+**Update to the newest plugin version:**
+
+```bash
+$ npx opencode-huge-agents autoupdate
+# or
+$ bunx opencode-huge-agents autoupdate
+```
+
 **Verify installation:**
 
 ```bash
@@ -297,6 +305,16 @@ $ npx opencode-huge-agents uninstall
 $ bunx opencode-huge-agents uninstall
 ```
 
+## $ ./autoupdate.sh
+
+```bash
+$ npx opencode-huge-agents autoupdate
+# or
+$ bunx opencode-huge-agents autoupdate
+```
+
+This runs `opencode plugin opencode-huge-agents@latest --global --force` to refresh the installed plugin and its cache.
+
 ---
 
 ## $ make build
@@ -338,7 +356,7 @@ src/
 - Easy to add new personas
 - Better testability
 
-**Current Commands:** `/ask`, `/exec`, and `/huge-plan` are registered on install. You can still switch between agents using Tab.
+**Current Commands:** `/ask`, `/exec`, and `/huge-plan` are registered on install. Use `opencode-huge-agents autoupdate` to refresh to the newest published plugin version.
 
 ---
 
