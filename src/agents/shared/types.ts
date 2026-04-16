@@ -1,6 +1,6 @@
 // Shared types used by all agents
 
-export type Persona = "ask" | "exec" | "huge-plan";
+export type Persona = "ask" | "solver" | "orchestrate";
 
 export interface AgentConfig {
   description?: string;

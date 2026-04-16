@@ -1,8 +1,8 @@
 import type { Plugin } from "@opencode-ai/plugin";
 import type { MutableConfig } from "./agents/shared/types.js";
 import { applyAskAgentConfig } from "./agents/ask/askConfig.js";
-import { applyExecAgentConfig } from "./agents/exec/execConfig.js";
-import { applyHugePlanAgentConfig } from "./agents/huge-plan/hugePlanConfig.js";
+import { applyOrchestrateAgentConfig } from "./agents/orchestrate/orchestrateConfig.js";
+import { applySolverAgentConfig } from "./agents/solver/solverConfig.js";
 
 export const HugeAgentsPlugin: Plugin = async () => ({
   config: async (config) => {
@@ -10,8 +10,8 @@ export const HugeAgentsPlugin: Plugin = async () => ({
     
     // Register all 3 agents
     applyAskAgentConfig(mutableConfig);
-    applyExecAgentConfig(mutableConfig);
-    applyHugePlanAgentConfig(mutableConfig);
+    applyOrchestrateAgentConfig(mutableConfig);
+    applySolverAgentConfig(mutableConfig);
   },
 });
 

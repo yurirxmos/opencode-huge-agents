@@ -1,4 +1,4 @@
-import { ASK_PERSONA_CONFIG } from "../huge/personas/askPersona.js";
+import { ASK_PERSONA_CONFIG } from "../personas/askPersona.js";
 import { applyAgentAndCommands } from "../shared/configMerger.js";
 import type { AgentConfig, CommandConfig, MutableConfig } from "../shared/types.js";
 
@@ -16,8 +16,7 @@ const DEFAULT_ASK_AGENT: AgentConfig = {
 const DEFAULT_ASK_COMMAND: CommandConfig = {
   description: "Ask objective technical questions with code evidence (read-only)",
   agent: ASK_AGENT_NAME,
-  template:
-    "Answer this technical question about the codebase with maximum objectivity. Keep it concise, include file:line evidence, do not propose plans, and NEVER edit files. Question: $ARGUMENTS",
+  template: "Question: $ARGUMENTS",
 };
 
 export function applyAskAgentConfig(config: MutableConfig): void {

@@ -6,9 +6,9 @@
 
 ```
 $ opencode agent list
-  → huge-plan ─────────── build-focused planning
-  → ask      ──────────── read-only technical advisor
-  → exec     ──────────── planning-first executor with approval menu
+  → ask          ──────── read-only code answers
+  → solver       ──────── strategy-first planning
+  → orchestrate  ──────── plan first, apply after approval
 ```
 
 ## $ ./overview.sh
@@ -17,9 +17,9 @@ $ opencode agent list
 ┌─────────────┬──────────────────────┬─────────────────────┬────────────────────────┐
 │ AGENT       │ PURPOSE              │ EDITING BEHAVIOR    │ BEST FOR               │
 ├─────────────┼──────────────────────┼─────────────────────┼────────────────────────┤
-│ huge-plan   │ Define what to build │ Read-only (never)   │ Clarifying scope       │
-│ ask         │ Technical advisor    │ Read-only (never)   │ Understanding code     │
-│ exec        │ Plan then execute    │ After approval      │ Guided delivery        │
+│ ask         │ Explain the code     │ Read-only (never)   │ Understanding code     │
+│ solver      │ Compare approaches   │ Read-only (never)   │ Clarifying strategy    │
+│ orchestrate │ Plan then apply      │ After approval      │ Guided implementation  │
 └─────────────┴──────────────────────┴─────────────────────┴────────────────────────┘
 ```
 
@@ -47,9 +47,9 @@ $ bunx opencode-huge-agents autoupdate
 
 ```bash
 $ opencode agent list
-  ✓ huge-plan (primary)
   ✓ ask (primary)
-  ✓ exec (primary)
+  ✓ solver (primary)
+  ✓ orchestrate (primary)
 ```
 
 ## $ ./usage.sh
@@ -57,68 +57,29 @@ $ opencode agent list
 ```bash
 # Tab completion to select agent
 $ opencode [TAB]
-  → huge-plan
   → ask
-  → exec
+  → solver
+  → orchestrate
 
 # Direct invocation via slash commands
-$ /huge-plan <request>
 $ /ask <question>
-$ /exec <task>
+$ /solver <request>
+$ /orchestrate <task>
 ```
-
----
-
-```
-╔══════════════════════════════════════════════════════════╗
-║  HUGE-PLAN AGENT                                         ║
-║  Clarify goals before building                           ║
-╚══════════════════════════════════════════════════════════╝
-```
-
-### Commands
-
-```bash
-$ /huge-plan <request>    # Build-focused planning workflow
-```
-
-### Workflow
-
-```
-[1] Understand desired outcome
-     ↓
-[2] Rewrite as clear build goal
-     ↓
-[3] Ask only high-impact questions
-     ↓
-[4] Produce concise implementation plan
-     ↓
-[5] Hand off to /exec
-```
-
-### Examples
-
-```bash
-$ /huge-plan build a dashboard for customer health
-$ /huge-plan create an onboarding flow for new users
-$ /huge-plan add exports to the analytics page
-```
-
-**Use huge-plan when:** You have a rough idea and want a clear, build-focused plan before implementation.
 
 ---
 
 ```
 ╔══════════════════════════════════════════════════════════╗
 ║  ASK AGENT                                               ║
-║  Read-only technical advisor                             ║
+║  Read-only answers about the code                        ║
 ╚══════════════════════════════════════════════════════════╝
 ```
 
 ### Command
 
 ```bash
-$ /ask <question>              # Objective technical answer with evidence (never edits)
+$ /ask <question>    # Objective technical answer with evidence (never edits)
 ```
 
 ### What Ask Does
@@ -127,12 +88,11 @@ $ /ask <question>              # Objective technical answer with evidence (never
 ✓ Explores and analyzes code
 ✓ Prioritizes objective, concise answers by default
 ✓ Returns direct answer + code evidence (file:line)
-✓ Expands only when user explicitly asks for deeper detail
+✓ Expands only when the user asks for deeper detail
 ✓ Explains architecture, flows, and dependencies when needed
-✓ Answers "how" and "why" questions with verified references
 ✗ NEVER edits files
-✗ NEVER proposes implementation plans or task breakdowns
-→ If action is requested, recommends switching to planning/execution mode
+✗ NEVER produces implementation plans by default
+→ If implementation is requested, recommends switching modes
 ```
 
 ### Examples
@@ -141,8 +101,6 @@ $ /ask <question>              # Objective technical answer with evidence (never
 $ /ask How does authentication work in this app?
 $ /ask Where is the user validation logic?
 $ /ask Explain the data flow in the checkout process
-$ /ask What patterns are used in the API layer?
-$ /ask What are the dependencies of the UserService?
 ```
 
 **Use ask when:** You need to understand code without making changes.
@@ -151,18 +109,70 @@ $ /ask What are the dependencies of the UserService?
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║  EXEC AGENT                                              ║
-║  Planning-first executor with approval menu             ║
+║  SOLVER AGENT                                            ║
+║  Better planning with strategy comparison                ║
 ╚══════════════════════════════════════════════════════════╝
 ```
 
 ### Commands
 
 ```bash
-$ /exec <task>    # Plan first, keep clarifying, then execute on implement now
+$ /solver <request>    # Build a plan and compare strategies without editing
 ```
 
-### How Exec Works
+### Workflow
+
+```
+[1] Understand the real goal
+     ↓
+[2] Rewrite it as a clear problem statement
+     ↓
+[3] Compare 1-3 viable strategies when useful
+     ↓
+[4] Recommend the simplest good approach
+     ↓
+[5] Produce a concise implementation plan
+```
+
+### Examples
+
+```bash
+$ /solver build a dashboard for customer health
+$ /solver create an onboarding flow for new users
+$ /solver add exports to the analytics page
+$ /solver improve search accuracy without slowing down the page
+```
+
+### Solver Output
+
+```
+1. Goal
+2. Scope
+3. Strategies
+4. Recommendation
+5. Open questions if needed
+6. Implementation plan
+7. Risks or assumptions when relevant
+```
+
+**Use solver when:** The request is ambiguous, there are multiple ways to solve it, or you want a stronger plan before coding.
+
+---
+
+```
+╔══════════════════════════════════════════════════════════╗
+║  ORCHESTRATE AGENT                                       ║
+║  Solver-first planning with approval before apply        ║
+╚══════════════════════════════════════════════════════════╝
+```
+
+### Commands
+
+```bash
+$ /orchestrate <task>    # Plan first, ask whether to apply it, then implement
+```
+
+### How Orchestrate Works
 
 ```
 ┌──────────────────────────┐
@@ -170,31 +180,32 @@ $ /exec <task>    # Plan first, keep clarifying, then execute on implement now
 └────────────┬─────────────┘
              │
   ┌──────────▼──────────┐
-  │ Build concise plan  │
+  │ Use Solver thinking │
+  │ to compare options  │
   └──────────┬──────────┘
              │
   ┌──────────▼──────────┐
-  │ Ask focused doubts  │
-  │ if needed           │
+  │ Recommend one path  │
+  │ + build the plan    │
   └──────────┬──────────┘
              │
   ┌──────────▼──────────┐
-  │ Interactive menu    │
-  │ → implement now     │
-  │ → ask questions     │
+  │ Ask for approval    │
+  │ → apply it          │
   │ → revise the plan   │
+  │ → ask questions     │
   │ → cancel            │
   └──────────┬──────────┘
              │
    doubts or revisions?
              │
-        yes ─┴─ no
+         yes ─┴─ no
              │
-     answer and refine
+      answer and refine
              │
-        show menu again
+      ask for approval again
              │
-  user chooses implement now
+   user chooses apply it
              │
   ┌──────────▼──────────┐
   │ Execute + validate  │
@@ -203,7 +214,7 @@ $ /exec <task>    # Plan first, keep clarifying, then execute on implement now
 
 ### Web Development Rules
 
-When working with **React/Next.js/HTML/CSS/UI**, exec automatically applies:
+When working with **React/Next.js/HTML/CSS/UI**, orchestrate automatically applies:
 
 **Accessibility:**
 - Icon buttons need `aria-label`
@@ -230,27 +241,27 @@ When working with **React/Next.js/HTML/CSS/UI**, exec automatically applies:
 - Form inputs without labels
 - `autoFocus` without justification
 
-### Menu Options
+### Approval Options
 
-At the end of the planning phase, exec asks the user what to do next:
+At the end of the planning phase, orchestrate asks the user what to do next:
 
-- implement now
-- ask focused questions about the project
+- apply it
 - revise the plan
+- ask focused questions about the project
 - cancel
 
-If the user still has doubts, exec keeps answering and refining the plan, then shows the same menu again with `implement now`.
+If the user still has doubts, orchestrate keeps answering and refining the plan, then asks again whether to `apply it`.
 
 ### Examples
 
 ```bash
-$ /exec Add error handling to the login function
-$ /exec Fix typos in config and update button text
-$ /exec Implement API caching with cache invalidation
-$ /exec Refactor authentication flow with rollback plan
+$ /orchestrate Add error handling to the login function
+$ /orchestrate Fix typos in config and update button text
+$ /orchestrate Implement API caching with cache invalidation
+$ /orchestrate Refactor authentication flow with rollback plan
 ```
 
-**Use exec when:** You want implementation, but only after seeing a plan and approving it.
+**Use orchestrate when:** You want a real implementation plan first, then a direct approval step before changes are applied.
 
 ---
 
@@ -261,19 +272,19 @@ $ /exec Refactor authentication flow with rollback plan
   "$schema": "https://opencode.ai/config.json",
   "plugin": ["opencode-huge-agents@latest"],
   "agent": {
-    "huge-plan": {
-      "color": "#55f76dff",
-      "permission": {
-        "question": "allow"
-      }
-    },
     "ask": {
       "color": "#ff8c42",
       "permission": {
         "question": "allow"
       }
     },
-    "exec": {
+    "solver": {
+      "color": "#55f76dff",
+      "permission": {
+        "question": "allow"
+      }
+    },
+    "orchestrate": {
       "color": "#ff3b3b",
       "permission": {
         "question": "allow"
@@ -291,9 +302,9 @@ $ /exec Refactor authentication flow with rollback plan
 ├─────────────┼──────────┼──────────┼─────────────────────────┤
 │ build       │ Immediate│ Manual   │ Quick features          │
 │ plan        │ Ask first│ Always   │ Understanding & planning│
-│ huge-plan   │ Never    │ Always   │ Build clarification     │
 │ ask         │ Never    │ N/A      │ Technical Q&A           │
-│ exec        │ After OK │ First    │ Guided execution        │
+│ solver      │ Never    │ Always   │ Strategy-first planning │
+│ orchestrate │ After OK │ First    │ Guided execution        │
 └─────────────┴──────────┴──────────┴─────────────────────────┘
 ```
 
@@ -336,17 +347,16 @@ src/
 │   ├── shared/                # Shared infrastructure
 │   │   ├── types.ts          # Common interfaces (AgentConfig, Persona, etc.)
 │   │   └── configMerger.ts   # Shared utilities (merge, apply)
-│   ├── huge/
-│   │   └── personas/         # Persona definitions
-│   │       ├── askPersona.ts
-│   │       ├── execPersona.ts
-│   │       └── hugePlanPersona.ts
 │   ├── ask/
 │   │   └── askConfig.ts      # Imports askPersona
-│   ├── exec/
-│   │   └── execConfig.ts     # Imports execPersona
-│   └── huge-plan/
-│       └── hugePlanConfig.ts # Imports hugePlanPersona
+│   ├── personas/
+│   │   ├── askPersona.ts
+│   │   ├── orchestratePersona.ts
+│   │   └── solverPersona.ts
+│   ├── orchestrate/
+│   │   └── orchestrateConfig.ts # Imports orchestratePersona
+│   └── solver/
+│       └── solverConfig.ts   # Imports solverPersona
 └── index.ts                  # Plugin entry point
 ```
 
@@ -356,7 +366,7 @@ src/
 - Easy to add new personas
 - Better testability
 
-**Current Commands:** `/ask`, `/exec`, and `/huge-plan` are registered on install. Use `opencode-huge-agents autoupdate` to refresh to the newest published plugin version.
+**Current Commands:** `/ask`, `/solver`, and `/orchestrate` are registered on install. Use `opencode-huge-agents autoupdate` to refresh to the newest published plugin version.
 
 ---
 

@@ -12,9 +12,9 @@ const AUTOUPDATE_COMMAND = ["plugin", AUTOUPDATE_PLUGIN_SPEC, "--global", "--for
 const HELP_TEXT = `opencode-huge-agents
 
 Multi-agent plugin for OpenCode with 3 specialized agents:
-  - huge-plan: Build-focused planning that sharpens rough requests
-  - ask: Read-only technical advisor for code questions
-  - exec: Planning-first executor with an approval menu
+  - ask: Read-only code answers with file-backed evidence
+  - solver: Strategy-first planning with multiple solution paths
+  - orchestrate: Turns the chosen approach into an approval-first implementation flow
 
 Usage:
   opencode-huge-agents install [plugin-spec] [--config /path/to/opencode.json]
@@ -29,8 +29,8 @@ Examples:
   opencode-huge-agents uninstall opencode-huge-agents
 
 After installation:
-  - Tab completion: Select huge-plan, ask, or exec as primary agent
-  - Commands: /huge-plan, /ask, /exec
+  - Tab completion: Select ask, solver, or orchestrate as primary agent
+  - Commands: /ask, /solver, /orchestrate
   - Run: opencode agent list
 `;
 
